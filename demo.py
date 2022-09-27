@@ -170,7 +170,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', type=str, required=True, default='./inputs')
-    parser.add_argument('--output_dir', type=str, required=True, help='./outputs')
+    parser.add_argument('--output_dir', type=str, required=True, default='./outputs')
     args = parser.parse_args()
     
     

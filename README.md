@@ -138,8 +138,13 @@ MODEL.WEIGHTS ./checkpoints/model_final_active.pth
 
 
 ## Demo
+Create `inputs` and `outputs` folders, put images you want to test into `inputs`:
 ```
-python demo.py
+mkdir inputs && mkdir outputs
+```
+Then run the demo:
+```
+python demo.py --inputs=inputs --outputs=outputs
 ```
 
 ## Citation
