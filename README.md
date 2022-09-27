@@ -4,7 +4,7 @@
 Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard Higgins, Sanja Fidler, David Fouhey, Dima Damen
 
 
-[Project Webpage](https://epic-kitchens.github.io/VISOR/)) / [Trailer](https://www.youtube.com/watch?v=yGodQAbYW_E) 
+[Project Webpage](https://epic-kitchens.github.io/VISOR/) / [Trailer](https://www.youtube.com/watch?v=yGodQAbYW_E) 
 ## Introduction
 This repo contains code for the Hand-Object-Segmentation benchmarks and evaluations in EPCI-KITCHENS VISOR.
 
