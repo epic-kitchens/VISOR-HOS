@@ -8,11 +8,9 @@ Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard Higgins, 
 ## Introduction
 This repo contains code for the Hand-Object-Segmentation benchmarks and evaluations in EPCI-KITCHENS VISOR.
 
-## Citation
-
+## Citing VISOR
 When use this repo, any of our models or dataset, you need to cite the VISOR paper
 
-## Citing VISOR
 ```
 @inproceedings{VISOR2022,
   title = {EPIC-KITCHENS VISOR Benchmark: VIdeo Segmentations and Object Relations},
