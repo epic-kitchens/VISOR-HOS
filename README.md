@@ -138,7 +138,7 @@ MODEL.WEIGHTS ./checkpoints/model_final_active.pth
 
 
 ## Demo
-Create `inputs` and `outputs` folders, put images you want to test into `inputs`:
+Create `inputs\` and `outputs\` folders, put images you want to test into `inputs\`:
 ```
 mkdir inputs && mkdir outputs
 ```
