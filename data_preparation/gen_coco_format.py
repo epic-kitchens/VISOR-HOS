@@ -75,8 +75,8 @@ if __name__ == '__main__':
     visor_annot_dir = f'{args.epick_visor_store}/annotations'
     visor_img_dir   = f'{args.epick_visor_store}/rgb_frames'
     #
-    vis_dir = f'/home/dandans/workspace/HOS/data_preparation/vis/{vis_folder}'
-    epick_visor_coco_dir = f'/nfs/turbo/fouheyUnrep/dandans/epick_visor_camera_ready/epick_visor_coco_v7/{save_folder}'
+    vis_dir = f'./vis/{vis_folder}'
+    epick_visor_coco_dir = f'../datasets/{save_folder}'
 
     os.makedirs(vis_dir, exist_ok=True)
     os.makedirs(epick_visor_coco_dir, exist_ok=True)
@@ -160,9 +160,6 @@ if __name__ == '__main__':
             print(fsave)
             os.makedirs(os.path.split(fsave)[0], exist_ok=True)          
             json.dump(info, open(fsave, 'w'), indent=4)    
-            
-            
-        continue
                         
             
         for json_path in tqdm(json_ls):
