@@ -93,7 +93,6 @@ mkdir checkpoints && cd checkpoints
 wget -O model_final_hos.pth https://www.dropbox.com/s/xi3249dbamv9wzs/model_final_hos.pth?dl=0
 wget -O model_final_active.pth https://www.dropbox.com/s/jner6mn0hogmbav/model_final_active.pth?dl=0
 cd ..
-
 ```
 
 
