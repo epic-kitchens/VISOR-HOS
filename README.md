@@ -31,7 +31,7 @@ Generate a COCO format annotation of VISOR data for training:
 
 &emsp;`--epick_visor`:the path to the annotation folder. 
 
-&emsp;`--mode`: coco format data for different tasks, choose from hos/active/handonly/all.
+&emsp;`--mode`: coco format data for different tasks, choose from `hos` or `active`.
 
 &emsp;`--split`: generate for which split, choose from train/val/test.
 
