@@ -198,8 +198,7 @@ if __name__ == '__main__':
         elif task == 'active':
             pointrend_cfg = "./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml"
             epick_model = f'./checkpoints/model_final_active.pth'
-
-        run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=False)
+            run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=False)
         
         
         
