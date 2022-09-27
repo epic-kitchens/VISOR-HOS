@@ -4,9 +4,7 @@
 Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard Higgins, Sanja Fidler, David Fouhey, Dima Damen
 
 
-<!-- ![method](assets/method.png) -->
-
-[Project Webpage](![method](assets/method.png)) / [Trailer](https://www.youtube.com/watch?v=yGodQAbYW_E) 
+[Project Webpage](https://epic-kitchens.github.io/VISOR/)) / [Trailer](https://www.youtube.com/watch?v=yGodQAbYW_E) 
 ## Introduction
 This repo contains code for the Hand-Object-Segmentation benchmarks and evaluations in EPCI-KITCHENS VISOR.
 
@@ -88,6 +86,17 @@ python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/tr
 ```
 
 
+## Pre-trained Weights
+Download our pre-trained weights into `checkpoints\` folder to run evaluation or demo code:
+```
+mkdir checkpoints && cd checkpoints
+wget -O model_final_hos.pth https://www.dropbox.com/s/xi3249dbamv9wzs/model_final_hos.pth?dl=0
+wget -O model_final_active.pth https://www.dropbox.com/s/jner6mn0hogmbav/model_final_active.pth?dl=0
+cd ..
+
+```
+
+
 ## Train
 Hand and Contacted Object Segmentation (HOS) model
 ```
@@ -115,7 +124,7 @@ python eval.py \
 --num-gpus 2 \
 --eval-only \
 OUTPUT_DIR ./checkpoints/hos_train \
-MODEL.WEIGHTS ./checkpoints/hos_train/model_final.pth
+MODEL.WEIGHTS ./checkpoints/model_final_hos.pth
 ```
 
 ```
@@ -124,7 +133,7 @@ python eval.py \
 --num-gpus 2 \
 --eval-only \
 OUTPUT_DIR ./checkpoints/active_train \
-MODEL.WEIGHTS ./checkpoints/active_train/model_final.pth
+MODEL.WEIGHTS ./checkpoints/model_final_active.pth
 ```
 
 

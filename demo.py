@@ -51,29 +51,24 @@ def run(mode=None, test_img_ls=None, out_dir=None, pointrend_cfg=None, model_wei
         os.makedirs(out_dir, exist_ok=True)
         mode += '_postprocess'
         
-    # cmd = f"ffmpeg -pattern_type glob -i '{out_dir}/*.jpg' -r 1 -t 00:01:00 {out_main_dir}/{task}.mp4"
-    # print(cmd)
-    # os.system(cmd)
-    # return
 
     for img_path in tqdm(test_img_ls):
 
         im = cv2.imread(img_path)
         out_path = os.path.join(out_dir, img_path.split('/')[-1].split('.')[0]+'_pred.jpg')
         outputs = predictor(im)
-        # print(f'{idx}, {outputs}')
+        
         if mode == 'all':
             v = Visualizer(im[:, :, ::-1], epick_visor_metadata, scale=1.2, instance_mode=ColorMode.IMAGE_BW)
         else:
             v = HOS_Visualizer(im[:, :, ::-1], epick_visor_metadata, scale=1.2, instance_mode=ColorMode.IMAGE_BW)
-        # v = Visualizer(im, epick_metadata, scale=1.2, instance_mode=ColorMode.IMAGE_BW)
+       
         if use_postprocess:
             outputs = hos_postprocessing(outputs)
         # pdb.set_trace()
         point_rend_result = v.draw_instance_predictions(outputs["instances"].to("cpu")).get_image()
         cv2.imwrite(out_path, point_rend_result[:, :, ::-1])
         
-    # cmd = f"ffmpeg -framerate 1 -pattern_type glob -i '{out_dir}/*.jpg' -t 00:01:00 {out_main_dir}/{task}.mp4"
     
       
 
@@ -131,7 +126,7 @@ def get_offset(h_bbox_xyxy, o_bbox_xyxy):
     '''
     h_center = [int((h_bbox_xyxy[0] + h_bbox_xyxy[2]) / 2), int((h_bbox_xyxy[1] + h_bbox_xyxy[3]) / 2)]
     o_center = [int((o_bbox_xyxy[0] + o_bbox_xyxy[2]) / 2), int((o_bbox_xyxy[1] + o_bbox_xyxy[3]) / 2)]
-    # offset: [vx, vy, magnitute], 
+    # offset: [vx, vy, magnitute]
     scalar = 1000 
     vec = np.array([o_center[0]-h_center[0], o_center[1]-h_center[1]]) / scalar
     norm = np.linalg.norm(vec)
@@ -198,11 +193,11 @@ if __name__ == '__main__':
         os.makedirs(out_dir, exist_ok=True)
         if task == 'hos':
             pointrend_cfg = "./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml"
-            epick_model = f'./checkpoints/hos_train/model_final.pth'
+            epick_model = f'./checkpoints/model_final_hos.pth'
             run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=True)
         elif task == 'active':
             pointrend_cfg = "./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml"
-            epick_model = f'./checkpoints/active_train/model_final.pth'
+            epick_model = f'./checkpoints/model_final_active.pth'
 
         run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=False)
         
