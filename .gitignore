@@ -1,0 +1,15 @@
+__pycache__
+*/__pycache__
+*/*/__pycache__
+
+*.sh
+*/*.sh
+*/*/*.sh
+*/*/*/*/*.pyc
+point_rend/
+datasets/
+checkpoints/
+
+inputs/
+outputs/
+backups/

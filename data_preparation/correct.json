@@ -1,0 +1,40 @@
+{
+    "P02_03_frame_0000003199.jpg": {
+        "right hand": "92449332813fe5fae6dd91d273fb41dd"
+    },
+    "P04_109_frame_0000017163.jpg": {
+        "left hand": "aa38113d7be5e067fed458534f88b58d",
+        "right hand": "96e099659e716f11c964b203d8612054"
+    },
+    "P04_109_frame_0000032872.jpg": {
+        "left hand": "a19b31956fafdbd7b0034ac2be7cc789",
+        "right hand": "a19b31956fafdbd7b0034ac2be7cc789"
+    },
+    "P12_101_frame_0000003059.jpg": {
+        "right hand": "8c10f70d4c8a80412f526e540c2089cf",
+        "left hand": "01980e87570945b49151fe69d8a74470"
+    },
+    "P24_05_frame_0000083798.jpg": {
+        "right hand": "2fd39661a416d97ec33508591d46724e"
+    },
+    "P30_107_frame_0000037454.jpg": {
+        "left hand": "e92015df66f4cd1f3b2a5552df8e4857"
+    },
+    "P32_01_frame_0000013628.jpg": {
+        "right hand": "066f5aa442517202abed0e1df6d02bda"
+    },
+    "P06_05_frame_0000022225.jpg": {
+        "right hand": "893e0c40fb77dcc957fea41940642f1c"
+    },
+    "P06_05_frame_0000041849.jpg": {
+        "left hand": "5df51ad337fb8c3156da2af0d157d922",
+        "right hand": "5df51ad337fb8c3156da2af0d157d922"
+    },
+    "P22_107_frame_0000007963.jpg": {
+        "left hand": "93fe58dc8838b6d93bb243b92c554ff7",
+        "right hand": "3914db5da22e920f744f6a39ac32b928"
+    },
+    "P22_107_frame_0000008318.jpg": {
+        "right hand": "405f6c1b6047a7658bdd2ef2bd635f5b"
+    }
+}

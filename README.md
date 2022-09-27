@@ -1,0 +1,140 @@
+# VISOR - Hand Object Segmentation (HOS) Challenge 
+## EPIC-KITCHENS VISOR Benchmark VIdeo Segmentations and Object Relations (NeurIPS 2022 - Datasets and Benchmarks Track)
+
+Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard Higgins, Sanja Fidler, David Fouhey, Dima Damen
+
+
+<!-- ![method](assets/method.png) -->
+
+[Project Webpage](![method](assets/method.png)) / [Trailer](https://www.youtube.com/watch?v=yGodQAbYW_E) 
+## Introduction
+This repo contains code for the Hand-Object-Segmentation benchmarks and evaluations in EPCI-KITCHENS VISOR.
+
+
+## Environment
+
+Conda environment recommended:
+- cv2
+- [pytorch](https://pytorch.org/get-started/locally/)
+- [detectron2](https://github.com/facebookresearch/detectron2)
+```
+conda create --name hos
+conda activate hos
+pip install opencv-python
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu102/torch1.9/index.html
+```
+
+## Data Preparation
+
+Download VISOR data from [EPIC-KITCHENS VISOR](https://epic-kitchens.github.io/VISOR/#downloads). Unzip it and rename it as `epick_visor`.
+
+Generate a COCO format annotation of VISOR data for training:
+
+&emsp;`--epick_visor`:the path to the annotation folder. 
+
+&emsp;`--mode`: coco format data for different tasks, choose from hos/active/handonly/all.
+
+&emsp;`--split`: generate for which split, choose from train/val/test.
+
+&emsp;`--unzip_img`: only need to use this args once to unzip the orginally downloaded compressed images for each video. Worth noting that `unzip` command sometimes has some issue, which affects data loading later.
+
+&emsp;`--copy_img`: copy images to get the same folder structure as in COCO.
+```
+python gen_coco_format.py \
+--epick_visor_store=/path/to/epick_visor/GroundTruth-SparseAnnotations \
+--mode=hos \
+--split train val test \
+--unzip_img \
+--copy_img \
+``` 
+
+Then data structure looks at this:
+```
+datasets
+├── epick_visor_coco_active
+│   ├── annotations
+│   │   ├── test.json
+│   │   ├── train.json
+│   │   └── val.json
+│   ├── test 
+│   │   └── *.jpg
+│   ├── train 
+│   │   └── *.jpg
+│   └── val 
+│       └── *.jpg
+└── epick_visor_coco_hos
+    ├── annotations
+    │   ├── test.json
+    │   ├── train.json
+    │   └── val.json
+    ├── test 
+    │   └── *.jpg
+    ├── train 
+    │   └── *.jpg
+    └── val 
+        └── *.jpg
+```
+
+Error Correction. In the script before generating the COCO version, we correct some errors first and save all jsons in `annotations_corrected` folder. 
+- In the dataset, there are missing "on_which_hand" and "in_contact_object" labels for two images with gloves, `P06_13/P06_13_frame_0000000128.jpg` and `P06_13/P06_13_frame_0000000181.jpg`. We add the keys and values for them to make sure all images with gloves have these two keys.
+- There is a typo on 13 images in train set where 'on_which_hand' is ['left hand', 'rigth hand'], we meant ['left hand', 'right hand']. We corrected them.  
+- Hand-object relations errors in 11 images.
+
+
+Visualize the COCO version annotations:
+```
+python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/train.json ./datasets/epick_visor_coco_hos/train epick_visor_2022_train
+```
+
+
+## Train
+Hand and Contacted Object Segmentation (HOS) model
+```
+python train_net_hos.py \
+--config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--num-gpus 2 \
+--dataset epick_hos  \
+OUTPUT_DIR ./checkpoints/hos_train
+```
+
+Hand and Active Object Segmentation (Active) model
+```
+python train_net_active.py \
+--config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--num-gpus 2 \
+--dataset epick_hand_activeobj \
+OUTPUT_DIR ./checkpoints/active_train
+```
+
+
+## Evaluation
+```
+python eval.py \
+--config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--num-gpus 2 \
+--eval-only \
+OUTPUT_DIR ./checkpoints/hos_train \
+MODEL.WEIGHTS ./checkpoints/hos_train/model_final.pth
+```
+
+```
+python eval.py \
+--config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--num-gpus 2 \
+--eval-only \
+OUTPUT_DIR ./checkpoints/active_train \
+MODEL.WEIGHTS ./checkpoints/active_train/model_final.pth
+```
+
+
+## Demo
+```
+python demo.py
+```
+
+## Citation
+If you find this code useful, please consider citing:
+
+```
+```

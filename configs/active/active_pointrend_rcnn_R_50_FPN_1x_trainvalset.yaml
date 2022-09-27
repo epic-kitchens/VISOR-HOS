@@ -1,0 +1,13 @@
+_BASE_: Base-PointRend-RCNN-FPN.yaml
+MODEL:
+  WEIGHTS: detectron2://ImageNetPretrained/MSRA/R-50.pkl
+  RESNETS:
+    DEPTH: 50
+# To add COCO AP evaluation against the higher-quality LVIS annotations.
+DATASETS:
+DATASETS:
+  # TRAIN: ("coco_2017_train", "epick_train")
+  # TEST: ("coco_2017_val", "epick_val")
+  TRAIN: ("epick_visor_2022_train_active", "epick_visor_2022_val_active")
+  TEST: ("epick_visor_2022_test_active", )
+  # TEST: ("epick_2022_test_hand_activeobj",)
