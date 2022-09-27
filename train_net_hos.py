@@ -108,12 +108,9 @@ def setup(args):
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
     
-    if args.dataset == 'epick_hand':
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
-        cfg.MODEL.POINT_HEAD.NUM_CLASSES = 1
-    else:
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
-        cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
+    # number of classes
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
+    cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
     
     # not flipping
     cfg.INPUT.RANDOM_FLIP = "none"

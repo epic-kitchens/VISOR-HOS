@@ -6,7 +6,7 @@ MODEL:
 # To add COCO AP evaluation against the higher-quality LVIS annotations.
 DATASETS:
   TRAIN: ("epick_visor_2022_train_hos",)
-  # TEST: ("epick_visor_2022_val_hos",)
+  TEST: ("epick_visor_2022_val_hos",)
   # TEST: ("epick_visor_2022_val_handside",)
   # TEST: ("epick_visor_2022_val_contact",)
 

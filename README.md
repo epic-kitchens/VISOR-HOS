@@ -97,7 +97,7 @@ cd ..
 
 
 ## Train
-Hand and Contacted Object Segmentation (HOS) model
+Hand and Contacted Object Segmentation (HOS) model. C
 ```
 python train_net_hos.py \
 --config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \

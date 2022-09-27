@@ -95,21 +95,9 @@ def build_sem_seg_train_aug(cfg):
 
 
 class Trainer(DefaultTrainer):
-    """
-    We use the "DefaultTrainer" which contains a number pre-defined logic for
-    standard training workflow. They may not work for you, especially if you
-    are working on a new research project. In that case you can use the cleaner
-    "SimpleTrainer", or write your own training loop.
-    """
 
     @classmethod
     def build_evaluator(cls, cfg, dataset_name, output_folder=None):
-        """
-        Create evaluator(s) for a given dataset.
-        This uses the special metadata "evaluator_type" associated with each builtin dataset.
-        For your own dataset, you can simply create an evaluator manually in your
-        script and do not have to worry about the hacky if-else logic here.
-        """
         if output_folder is None:
             output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
         evaluator_list = []
@@ -145,15 +133,9 @@ def setup(args):
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
     
-    if args.dataset == 'epick_hand':
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
-        cfg.MODEL.POINT_HEAD.NUM_CLASSES = 1
-    elif args.dataset == 'epick_all':
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 303
-        cfg.MODEL.POINT_HEAD.NUM_CLASSES = 303
-    else:
-        cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
-        cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
+    # number of classes
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
+    cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
     
     # not flipping
     if args.dataset in ['epick_hand_leftright', 'epick_hos']:

@@ -254,8 +254,7 @@ def add_item(image_id=None,
     item['handside'] = handside
     item['isincontact'] = incontact
     item['offset'] = offset
-    # item['incontact_object_bbox'] = object_bbox
-    # item['use_hand_intrain'] = used_intrain
+
     return item
 
 
@@ -269,7 +268,6 @@ def transfer_noun(noun):
 
 def get_coco_category(csv_path='./EPIC_100_noun_classes_v2.csv'):
     key_dict = {}
-    # acceptable = ['cutlery', 'crockery', 'cookware', 'utensils', 'containers']
     with open(csv_path, 'r') as csvfile:
         csvreader = csv.DictReader(csvfile)
         for row in csvreader:
@@ -290,8 +288,6 @@ def get_coco_category(csv_path='./EPIC_100_noun_classes_v2.csv'):
 def get_category_id(entity_name, key_dict, fwrite=None):
     entity_name = entity_name.strip()
     entity_name = entity_name.lower()
-    # if entity_name in typo_map.keys():
-    #     entity_name  = typo_map[entity_name]
     for kind, kval in key_dict.items():
         if entity_name in kval['instances']:
             return kind
