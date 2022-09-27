@@ -33,7 +33,7 @@ Generate a COCO format annotation of VISOR data for training:
 
 &emsp;`--mode`: coco format data for different tasks, choose from `hos` or `active`.
 
-&emsp;`--split`: generate for which split, choose from train/val/test.
+&emsp;`--split`: generate for which split, choose from `train` and `val`.
 
 &emsp;`--unzip_img`: only need to use this args once to unzip the orginally downloaded compressed images for each video. Worth noting that `unzip` command sometimes has some issue, which affects data loading later.
 
@@ -42,32 +42,26 @@ Generate a COCO format annotation of VISOR data for training:
 python gen_coco_format.py \
 --epick_visor_store=/path/to/epick_visor/GroundTruth-SparseAnnotations \
 --mode=hos \
---split train val test \
+--split train val \
 --unzip_img \
 --copy_img \
 ``` 
 
-Then data structure looks at this:
+Then the data structure looks like below:
 ```
 datasets
 ├── epick_visor_coco_active
 │   ├── annotations
-│   │   ├── test.json
 │   │   ├── train.json
 │   │   └── val.json
-│   ├── test 
-│   │   └── *.jpg
 │   ├── train 
 │   │   └── *.jpg
 │   └── val 
 │       └── *.jpg
 └── epick_visor_coco_hos
     ├── annotations
-    │   ├── test.json
     │   ├── train.json
     │   └── val.json
-    ├── test 
-    │   └── *.jpg
     ├── train 
     │   └── *.jpg
     └── val 
@@ -76,11 +70,11 @@ datasets
 
 Error Correction. In the script before generating the COCO version, we correct some errors first and save all jsons in `annotations_corrected` folder. 
 - In the dataset, there are missing "on_which_hand" and "in_contact_object" labels for two images with gloves, `P06_13/P06_13_frame_0000000128.jpg` and `P06_13/P06_13_frame_0000000181.jpg`. We add the keys and values for them to make sure all images with gloves have these two keys.
-- There is a typo on 13 images in train set where 'on_which_hand' is ['left hand', 'rigth hand'], we meant ['left hand', 'right hand']. We corrected them.  
+- There is a typo on 13 images in train set where 'on_which_hand' is ['left hand', 'rigth hand'], we meant ['left hand', 'right hand'].
 - Hand-object relations errors in 11 images.
 
 
-Visualize the COCO version annotations:
+Visualize the COCO version annotations from trainset:
 ```
 python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/train.json ./datasets/epick_visor_coco_hos/train epick_visor_2022_train
 ```
@@ -100,7 +94,7 @@ cd ..
 Hand and Contacted Object Segmentation (HOS) model:
 ```
 python train_net_hos.py \
---config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x.yaml \
 --num-gpus 2 \
 --dataset epick_hos  \
 OUTPUT_DIR ./checkpoints/hos_train
@@ -108,9 +102,9 @@ OUTPUT_DIR ./checkpoints/hos_train
 Hand and Active Object Segmentation (Active) model:
 ```
 python train_net_active.py \
---config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x.yaml \
 --num-gpus 2 \
---dataset epick_hand_activeobj \
+--dataset epick_active \
 OUTPUT_DIR ./checkpoints/active_train
 ```
 
@@ -119,19 +113,19 @@ OUTPUT_DIR ./checkpoints/active_train
 Hand and Contacted Object Segmentation (HOS) model:
 ```
 python eval.py \
---config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x.yaml \
 --num-gpus 2 \
 --eval-only \
-OUTPUT_DIR ./checkpoints/hos_train \
+OUTPUT_DIR ./checkpoints/hos \
 MODEL.WEIGHTS ./checkpoints/model_final_hos.pth
 ```
 Hand and Active Object Segmentation (Active) model:
 ```
 python eval.py \
---config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
+--config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x.yaml \
 --num-gpus 2 \
 --eval-only \
-OUTPUT_DIR ./checkpoints/active_train \
+OUTPUT_DIR ./checkpoints/active \
 MODEL.WEIGHTS ./checkpoints/model_final_active.pth
 ```
 

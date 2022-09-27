@@ -10,7 +10,6 @@ from PIL import Image
 from data_util import *
 random.seed(0)
 
-# COCO main structure -------------------------------------------------------------------------
 coco = {
     # "info": {...},
     # "licenses": [...],
@@ -28,15 +27,7 @@ epick_visor_info = {
     "contributor": "Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard E.L. Higgins, Sanja Fidler, David F. Fouhey, Dima Damen"
 }
 
-licenses = [
-    # TODO: add license?
-    {
-        "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
-        "id": 1,
-        "name": "Attribution-NonCommercial-ShareAlike License"
-    }
-]
-
+licenses = []
 
 images = [
     # {
@@ -53,12 +44,9 @@ glove_ls = ['oven glove', 'gloves', 'rubber glove', 'left glove', 'right glove',
 
 if __name__ == '__main__':
     
-    # python gen_coco_format.py --epick_visor_store=/nfs/turbo/fouheyUnrep/dandans/epick_visor_camera_ready/epick_visor/GroundTruth-SparseAnnotations --mode=active --split train val test
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--epick_visor_store', type=str, required=True, default='/path/to/epick_visor/GroundTruth-SparseAnnotations', help='Folder saving EPIC-KITCHENS VISOR data.')
-    # parser.add_argument('--save_folder', type=str, help='Folder name for the version of annotation.')
-    parser.add_argument('--vis', action='store_true', help='Generate visualization or not.')
     parser.add_argument('--num', type=int, default=None, help='Number of jsons to process.')
     parser.add_argument('--copy_img', action='store_true', help='Whether to copy image.')
     parser.add_argument('--unzip_img', action='store_true', help='Whether to unzip image.')
@@ -71,7 +59,7 @@ if __name__ == '__main__':
     vis_folder = f'epick_visor_coco_{args.mode}'
     save_folder = f'epick_visor_coco_{args.mode}'
     vis = args.vis
-    
+    #
     visor_annot_dir = f'{args.epick_visor_store}/annotations'
     visor_img_dir   = f'{args.epick_visor_store}/rgb_frames'
     #
@@ -107,7 +95,6 @@ if __name__ == '__main__':
         key_dict, coco_categories = get_coco_category()
     
     
-    # for split in ['train', 'val', 'test']:
     for split in args.split:
         img_ls, annot_ls = [], []
         img_id, annot_id = 0, 0
@@ -152,9 +139,6 @@ if __name__ == '__main__':
                                 info['video_annotations'][i_idx]['annotations'][d_idx]['in_contact_object'] = correct_dict[name][entity['name']]
                                 # print(name, entity['name'], 'before:', info['video_annotations'][i_idx]['annotations'][d_idx]['in_contact_object'], 'after:', correct_dict[name][entity['name']])
                                 
-                        
-                                
-                
             
             fsave = json_path.replace('annotations', 'annotations_corrected')     
             print(fsave)
@@ -239,7 +223,7 @@ if __name__ == '__main__':
                                 
                                 # for special glove cases
                                 if args.combine_on_hand_glove_w_hand and in_contact_object['name'] in glove_ls:
-                                    #! correct typo
+                                    # correct typo
                                     if in_contact_object['on_which_hand'] is not None and len(in_contact_object['on_which_hand']) == 2:
                                         in_contact_object['on_which_hand'] = ['left hand', 'right hand']
                                     # for on-hand gloves
@@ -330,11 +314,6 @@ if __name__ == '__main__':
 
                                     annot_ls.append(annot)
                                     annot_id += 1
-                                    
-                                    if vis:
-                                        img = np.array(img)
-                                        cv2.fillPoly(img, h_masks, color_ls[category_id])
-                                        cv2.rectangle(img, (h_bbox_xyxy[0], h_bbox_xyxy[1]), (h_bbox_xyxy[2], h_bbox_xyxy[3]), thickness=5, color=color_ls[category_id])
                                         
                                 else:
                                     annot = add_item(
@@ -370,28 +349,7 @@ if __name__ == '__main__':
                                                 offset       = [-1, -1, -1]
                                                 )
                                     annot_ls.append(annot)
-                                    annot_id += 1
-                                    
-                                    
-                                    # vis: plot all hands and objs
-                                    if vis:
-                                        img = np.array(img)
-                                        cv2.fillPoly(img, h_masks, color_ls[category_id])
-                                        cv2.rectangle(img, (h_bbox_xyxy[0], h_bbox_xyxy[1]), (h_bbox_xyxy[2], h_bbox_xyxy[3]), thickness=5, color=color_ls[category_id])
-                                        cv2.fillPoly(img, o_masks, color_ls[category_id])
-                                        cv2.rectangle(img, (o_bbox_xyxy[0], o_bbox_xyxy[1]), (o_bbox_xyxy[2], o_bbox_xyxy[3]), thickness=5, color=color_ls[category_id])
-                                        
-                                            
-                                if vis:
-                                    img = np.array(img)
-                                    vis_path = os.path.join(vis_dir, img_path[:-4]+f'_{e_idx}.jpg')
-                                    os.makedirs( os.path.split(vis_path)[0], exist_ok=True)
-                                    img_copy = cv2.imread( os.path.join(img_dir, img_name ))
-                                    print(img.shape, img_copy.shape)
-                                    img_new = cv2.addWeighted(img, 0.4, img_copy, 0.6, 0)
-                                    if isinstance(img, np.ndarray):
-                                        img = Image.fromarray(img)
-                                    img.save(vis_path)
+                                    annot_id += 1             
                         
                         
                         # for on-hand gloves   
@@ -488,11 +446,6 @@ if __name__ == '__main__':
                                         annot_ls.append(annot)
                                         annot_id += 1
                                         
-                                        if vis:
-                                            img = np.array(img)
-                                            cv2.fillPoly(img, h_masks, color_ls[category_id])
-                                            cv2.rectangle(img, (h_bbox_xyxy[0], h_bbox_xyxy[1]), (h_bbox_xyxy[2], h_bbox_xyxy[3]), thickness=5, color=color_ls[category_id])
-                                            
                                     else:
                                         annot = add_item(
                                                     id           = annot_id,
@@ -566,23 +519,7 @@ if __name__ == '__main__':
                             annot_ls.append(annot)
                             annot_id += 1
                                 
-                            if vis:
-                                img = np.array(img)
-                                cv2.fillPoly(img, masks, color_ls[category_id-1])
-                                cv2.rectangle(img, (bbox_xyxy[0], bbox_xyxy[1]), (bbox_xyxy[2], bbox_xyxy[3]), thickness=5, color=color_ls[category_id-1])
-                            
-                                img = np.array(img)
-                                vis_path = os.path.join(vis_dir, img_path[:-4]+f'_{e_idx}.jpg')
-                                os.makedirs( os.path.split(vis_path)[0], exist_ok=True)
-                                img_copy = cv2.imread( os.path.join(img_dir, img_name ))
-                                print(img.shape, img_copy.shape)
-                                img_new = cv2.addWeighted(img, 0.4, img_copy, 0.6, 0)
-                                if isinstance(img, np.ndarray):
-                                    img = Image.fromarray(img)
-                                img.save(vis_path)
-                                
-                        
-                
+          
                     # add image   
                     img_id += 1
                     img_ls.append(img_item)

@@ -11,7 +11,6 @@ from PIL import Image
 from data_util import *
 random.seed(0)
 
-# COCO main structure -------------------------------------------------------------------------
 coco = {
     # "info": {...},
     # "licenses": [...],
@@ -29,14 +28,7 @@ epick_visor_info = {
     "contributor": "Ahmad Darkhalil*, Dandan Shan*, Bin Zhu*, Jian Ma*, Amlan Kar, Richard E.L. Higgins, Sanja Fidler, David F. Fouhey, Dima Damen"
 }
 
-licenses = [
-    # TODO: add license?
-    {
-        "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
-        "id": 1,
-        "name": "Attribution-NonCommercial-ShareAlike License"
-    }
-]
+licenses = []
 
 
 images = [
@@ -54,12 +46,8 @@ glove_ls = ['oven glove', 'gloves', 'rubber glove', 'left glove', 'right glove',
 
 if __name__ == '__main__':
     
-    # python gen_coco_format_handside_contact.py --epick_visor_store=/nfs/turbo/fouheyUnrep/dandans/epick_visor_camera_ready/epick_visor/GroundTruth-SparseAnnotations --mode=active --split val test
-    
     parser = argparse.ArgumentParser()
     parser.add_argument('--epick_visor_store', type=str, required=True, default='/path/to/epick_visor/GroundTruth-SparseAnnotations', help='Folder saving EPIC-KITCHENS VISOR data.')
-    # parser.add_argument('--save_folder', type=str, help='Folder name for the version of annotation.')
-    parser.add_argument('--vis', action='store_true', help='Generate visualization or not.')
     parser.add_argument('--num', type=int, default=None, help='Number of jsons to process.')
     parser.add_argument('--copy_img', action='store_true', help='Whether to copy image.')
     parser.add_argument('--unzip_img', action='store_true', help='Whether to unzip image.')
@@ -107,7 +95,6 @@ if __name__ == '__main__':
     if args.mode == 'all':
         key_dict, coco_categories = get_coco_category()
     
-    # for split in ['train', 'val', 'test']:
     for split in args.split:
         img_ls, annot_ls = [], []
         img_id, annot_id = 0, 0
@@ -153,9 +140,6 @@ if __name__ == '__main__':
                                     info['video_annotations'][i_idx]['annotations'][d_idx]['in_contact_object'] = correct_dict[name][entity['name']]
                                     # print(name, entity['name'], 'before:', info['video_annotations'][i_idx]['annotations'][d_idx]['in_contact_object'], 'after:', correct_dict[name][entity['name']])
                                     
-                        
-                                
-                
             
             fsave = json_path.replace('annotations', 'annotations_corrected')     
             print(fsave)
@@ -317,7 +301,7 @@ if __name__ == '__main__':
                                 # check if hand-in-glove, if so combine hand+glove as hand
                                 in_contact_object_id = entity['in_contact_object'] 
                                 if in_contact_object_id in ['none-of-the-above', 'inconclusive', None]:                                
-                                    print(f'>> Error: Glove should not have invalid label')
+                                    print(f'>> Error: Invalid glove should not be in evaluation data')
                                     pdb.set_trace()                              
                                     continue
                                     
@@ -328,9 +312,6 @@ if __name__ == '__main__':
                                     isincontact = 1
                                     in_contact_object = [x for x in entities if x['id']== in_contact_object_id][0]
                         
-                                    
-                           
-                                        
 
                             if args.mode == 'handside':
                                 # add hand

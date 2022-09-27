@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-"""
-PointRend Training Script.
-
-This script is a simplified version of the training script in detectron2/tools.
-"""
-
 import os, pdb, random
 import torch
 
@@ -24,21 +18,17 @@ from detectron2.evaluation import (
     verify_results,
 )
 from detectron2.projects.point_rend import ColorAugSSDTransform, add_pointrend_config
-
-# register dataset
 from detectron2.data import MetadataCatalog
 from hos.data.datasets.epick import register_epick_instances
 
-
+# register dataset
 version = 'datasets/epick_visor_coco_active'
 
 register_epick_instances("epick_visor_2022_train_active", {}, f"{version}/annotations/train.json", f"{version}/train")
 register_epick_instances("epick_visor_2022_val_active", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_active", {}, f"{version}/annotations/test.json", f"{version}/test")
 
 MetadataCatalog.get("epick_visor_2022_train_active").thing_classes = ["hand", "object"]
 MetadataCatalog.get("epick_visor_2022_val_active").thing_classes = ["hand", "object"]
-MetadataCatalog.get("epick_visor_2022_test_active").thing_classes = ["hand", "object"]
 
 
 def transfer_noun(noun):
@@ -48,7 +38,7 @@ def transfer_noun(noun):
     return ' '.join(List[1:]) + ' ' + List[0]
 
 
-def get_category(csv_path='./data_prep/EPIC_100_noun_classes_v2.csv'):
+def get_category(csv_path='./data_preparation/EPIC_100_noun_classes_v2.csv'):
     import csv
     key_dict = {}
     with open(csv_path, 'r') as csvfile:
@@ -68,9 +58,6 @@ def get_category(csv_path='./data_prep/EPIC_100_noun_classes_v2.csv'):
     coco_categories = [ {'id':kind, 'name':kval['key']} for kind, kval in key_dict.items()]
     categories_ls = [ kval['key'] for kind, kval in key_dict.items()]
     return key_dict, coco_categories, categories_ls
-
-
-
 
 
 def build_sem_seg_train_aug(cfg):
@@ -138,8 +125,9 @@ def setup(args):
     cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
     
     # not flipping
-    if args.dataset in ['epick_hand_leftright', 'epick_hos']:
+    if args.dataset in ['epick_hos']:
         cfg.INPUT.RANDOM_FLIP = "none"
+        
     cfg.freeze()
     default_setup(cfg, args)
     return cfg
@@ -148,7 +136,6 @@ def setup(args):
 def main(args):
     cfg = setup(args)
     print(f'here are the configs:\n {cfg}')
-    # pdb.set_trace()
     if args.eval_only:
         model = Trainer.build_model(cfg)
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
@@ -166,10 +153,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = default_argument_parser()
-    parser.add_argument('--dataset', required=True, help='Dataset to train the model.')
+    parser.add_argument('--dataset', required=True, , default="epick_active", help='Dataset to train the model.')
     args = parser.parse_args()
-    args.num_gpus = 2
-    args.dist_url = f"tcp://127.0.0.1:8858"
+    args.dist_url = f"tcp://127.0.0.1:8888"
     print("Command Line Args:", args)
 
 

@@ -19,9 +19,7 @@ from detectron2.evaluation import (
     DatasetEvaluators,
     verify_results,
 )
-
 from hos.config import add_hos_config
-# from point_rend import add_pointrend_config
 from detectron2.projects.point_rend import ColorAugSSDTransform, add_pointrend_config
 
 # register dataset
@@ -33,30 +31,19 @@ from hos.evaluation.epick_evaluation import EPICKEvaluator
 
 version = 'datasets/epick_visor_coco_hos'
 register_epick_instances("epick_visor_2022_val_hos", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_hos", {}, f"{version}/annotations/test.json", f"{version}/test")
 MetadataCatalog.get("epick_visor_2022_val_hos").thing_classes = ["hand", "object"]
-MetadataCatalog.get("epick_visor_2022_test_hos").thing_classes = ["hand", "object"]
-
 
 version = 'datasets/epick_visor_coco_contact'
 register_epick_instances("epick_visor_2022_val_contact", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_contact", {}, f"{version}/annotations/test.json", f"{version}/test")
 MetadataCatalog.get("epick_visor_2022_val_contact").thing_classes = ["not_incontact", 'incontact']
-MetadataCatalog.get("epick_visor_2022_test_contact").thing_classes = ["not_incontact", 'incontact']
-
 
 version = 'datasets/epick_visor_coco_handside'
 register_epick_instances("epick_visor_2022_val_handside", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_handside", {}, f"{version}/annotations/test.json", f"{version}/test")
 MetadataCatalog.get("epick_visor_2022_val_handside").thing_classes = ["left", "right"]
-MetadataCatalog.get("epick_visor_2022_test_handside").thing_classes = ["left", "right"]
-
 
 version = 'datasets/epick_visor_coco_active'
 register_epick_instances("epick_visor_2022_val_active", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_active", {}, f"{version}/annotations/test.json", f"{version}/test")
 MetadataCatalog.get("epick_visor_2022_val_active").thing_classes = ["hand", "object"]
-MetadataCatalog.get("epick_visor_2022_test_active").thing_classes = ["hand", "object"]
 
 def build_sem_seg_train_aug(cfg):
     augs = [
@@ -90,18 +77,12 @@ class Trainer(DefaultTrainer):
         
         if evaluator_type == "coco":
             evaluator_list = [
-                # EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='obj_box'),
+                # choose 1 task you want to evaluate below:
+                
+                EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='obj_box'),
                 # EPICKEvaluator('epick_visor_2022_val_handside', output_dir=output_folder, eval_task='handside'),
                 # EPICKEvaluator('epick_visor_2022_val_contact', output_dir=output_folder, eval_task='contact'),
-                
-                
-                # EPICKEvaluator('epick_visor_2022_test_hos', output_dir=output_folder, eval_task='obj_box'),
-                # EPICKEvaluator('epick_visor_2022_test_handside', output_dir=output_folder, eval_task='handside'),
-                # EPICKEvaluator('epick_visor_2022_test_contact', output_dir=output_folder, eval_task='contact'),
-                
                 # COCOEvaluator('epick_visor_2022_val_active', output_dir=output_folder), 
-                COCOEvaluator('epick_visor_2022_test_active', output_dir=output_folder), 
-                
                 ]
             return DatasetEvaluators(evaluator_list)
 
@@ -138,7 +119,6 @@ def setup(args):
 def main(args):
     cfg = setup(args)
     print(f'here are the configs:\n {cfg}')
-    # pdb.set_trace()
     if args.eval_only:
         model = Trainer.build_model(cfg)
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(

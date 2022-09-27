@@ -7,14 +7,12 @@ import numpy as np
 from tqdm import tqdm
 
 import torch
-# import some common detectron2 utilities
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import ColorMode , Visualizer
 from detectron2.data import MetadataCatalog
 from detectron2.structures import Instances
 
-# import PointRend project
 from detectron2.projects import point_rend
 from hos.data.datasets.epick import register_epick_instances
 from hos.data.hos_datasetmapper import HOSMapper

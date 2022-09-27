@@ -1,16 +1,8 @@
 #!/usr/bin/env python3
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-"""
-PointRend Training Script.
-
-This script is a simplified version of the training script in detectron2/tools.
-"""
-
 import os, pdb, random
 import torch
-# from PIL import ImageFile
-# ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 import detectron2.data.transforms as T
 import detectron2.utils.comm as comm
@@ -26,8 +18,6 @@ from detectron2.evaluation import (
     verify_results,
 )
 from detectron2.projects.point_rend import ColorAugSSDTransform, add_pointrend_config
-
-
 from detectron2.data import MetadataCatalog
 from hos.data.datasets.epick import register_epick_instances
 from hos.data.hos_datasetmapper import HOSMapper
@@ -38,11 +28,10 @@ version = 'datasets/epick_visor_coco_hos'
 
 register_epick_instances("epick_visor_2022_train_hos", {}, f"{version}/annotations/train.json", f"{version}/train")
 register_epick_instances("epick_visor_2022_val_hos", {}, f"{version}/annotations/val.json", f"{version}/val")
-register_epick_instances("epick_visor_2022_test_hos", {}, f"{version}/annotations/test.json", f"{version}/test")
 
 MetadataCatalog.get("epick_visor_2022_train_hos").thing_classes = ["hand", "object"]
 MetadataCatalog.get("epick_visor_2022_val_hos").thing_classes = ["hand", "object"]
-MetadataCatalog.get("epick_visor_2022_test_hos").thing_classes = ["hand", "object"]
+
 
 
 def build_sem_seg_train_aug(cfg):
@@ -94,8 +83,8 @@ class Trainer(DefaultTrainer):
         else:
             mapper = None
         mapper = HOSMapper(cfg)
-        print(f'dataset mapper used: {mapper}, {cfg.MODEL.META_ARCHITECTURE}')
-        # pdb.set_trace()
+        print(f'Dataset mapper used: {mapper}, {cfg.MODEL.META_ARCHITECTURE}')
+    
         return build_detection_train_loader(cfg, mapper=mapper)
 
 
@@ -112,8 +101,9 @@ def setup(args):
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 2
     cfg.MODEL.POINT_HEAD.NUM_CLASSES = 2
     
-    # not flipping
-    cfg.INPUT.RANDOM_FLIP = "none"
+    #! no random flipping in HOS since left and right will be predicted
+    if args.dataset in ['epick_hos']:    
+        cfg.INPUT.RANDOM_FLIP = "none"
     
     cfg.freeze()
     default_setup(cfg, args)
@@ -123,7 +113,6 @@ def setup(args):
 def main(args):
     cfg = setup(args)
     print(f'here are the configs:\n {cfg}')
-    # pdb.set_trace()
     if args.eval_only:
         model = Trainer.build_model(cfg)
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
@@ -141,10 +130,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = default_argument_parser()
-    parser.add_argument('--dataset', default="epick_hos", help='Dataset to train the model.')
+    parser.add_argument('--dataset', required=True, default="epick_hos", help='Dataset to train the model.')
     args = parser.parse_args()
-    args.num_gpus = 2
-    args.dist_url = f"tcp://127.0.0.1:60011"
+    args.dist_url = f"tcp://127.0.0.1:8889"
     print("Command Line Args:", args)
 
 

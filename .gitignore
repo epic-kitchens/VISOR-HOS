@@ -6,10 +6,9 @@ __pycache__
 */*.sh
 */*/*.sh
 */*/*/*/*.pyc
-point_rend/
-datasets/
-checkpoints/
 
 inputs/
 outputs/
 backups/
+datasets/
+checkpoints/
