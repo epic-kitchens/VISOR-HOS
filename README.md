@@ -97,7 +97,7 @@ cd ..
 
 
 ## Train
-Hand and Contacted Object Segmentation (HOS) model. C
+Hand and Contacted Object Segmentation (HOS) model:
 ```
 python train_net_hos.py \
 --config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
@@ -105,8 +105,7 @@ python train_net_hos.py \
 --dataset epick_hos  \
 OUTPUT_DIR ./checkpoints/hos_train
 ```
-
-Hand and Active Object Segmentation (Active) model
+Hand and Active Object Segmentation (Active) model:
 ```
 python train_net_active.py \
 --config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
@@ -117,6 +116,7 @@ OUTPUT_DIR ./checkpoints/active_train
 
 
 ## Evaluation
+Hand and Contacted Object Segmentation (HOS) model:
 ```
 python eval.py \
 --config-file ./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
@@ -125,7 +125,7 @@ python eval.py \
 OUTPUT_DIR ./checkpoints/hos_train \
 MODEL.WEIGHTS ./checkpoints/model_final_hos.pth
 ```
-
+Hand and Active Object Segmentation (Active) model:
 ```
 python eval.py \
 --config-file ./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml \
