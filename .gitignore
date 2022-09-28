@@ -11,4 +11,5 @@ inputs/
 outputs/
 backups/
 datasets/
+!data/datasets/
 checkpoints/
