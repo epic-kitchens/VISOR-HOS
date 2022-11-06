@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
     vis_folder = f'epick_visor_coco_{args.mode}'
     save_folder = f'epick_visor_coco_{args.mode}'
-    vis = args.vis
     #
     visor_annot_dir = f'{args.epick_visor_store}/annotations'
     visor_img_dir   = f'{args.epick_visor_store}/rgb_frames'
