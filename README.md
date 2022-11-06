@@ -40,7 +40,7 @@ Download VISOR data from [EPIC-KITCHENS VISOR](https://epic-kitchens.github.io/V
 
 Generate a COCO format annotation of VISOR data for training:
 
-&emsp;`--epick_visor`:the path to the annotation folder. 
+&emsp;`--epick_visor_store`: the path to the annotation folder. 
 
 &emsp;`--mode`: coco format data for different tasks, choose from `hos` or `active`.
 
