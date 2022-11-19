@@ -148,6 +148,6 @@ mkdir inputs && mkdir outputs
 ```
 Then run the demo:
 ```
-python demo.py --inputs=inputs --outputs=outputs
+python demo.py --input_dir=inputs --output_dir=outputs
 ```
 
