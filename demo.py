@@ -190,11 +190,11 @@ if __name__ == '__main__':
         out_dir    = f'{args.output_dir}/{task}'
         os.makedirs(out_dir, exist_ok=True)
         if task == 'hos':
-            pointrend_cfg = "./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x_trainset.yaml"
+            pointrend_cfg = "./configs/hos/hos_pointrend_rcnn_R_50_FPN_1x.yaml"
             epick_model = f'./checkpoints/model_final_hos.pth'
             run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=True)
         elif task == 'active':
-            pointrend_cfg = "./configs/active/active_pointrend_rcnn_R_50_FPN_1x_trainset.yaml"
+            pointrend_cfg = "./configs/active/active_pointrend_rcnn_R_50_FPN_1x.yaml"
             epick_model = f'./checkpoints/model_final_active.pth'
             run(task, test_img_ls, out_dir, pointrend_cfg, epick_model, use_postprocess=False)
         
