@@ -79,7 +79,7 @@ class Trainer(DefaultTrainer):
             evaluator_list = [
                 # choose 1 task you want to evaluate below:
                 
-                EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='obj_box'),
+                EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='hand_obj'),
                 # EPICKEvaluator('epick_visor_2022_val_handside', output_dir=output_folder, eval_task='handside'),
                 # EPICKEvaluator('epick_visor_2022_val_contact', output_dir=output_folder, eval_task='contact'),
                 # COCOEvaluator('epick_visor_2022_val_active', output_dir=output_folder), 

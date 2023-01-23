@@ -42,9 +42,67 @@ def hos_postprocessing(predictions):
             ho = Instances.cat(modified_hand_preds)
         else: 
             ho = []
-    
-    
+                
     return ho
+
+
+
+def combineHO_postprocessing(predictions):
+    '''
+    Use predicted offsets to link hand and obj, and combine the object to the hand mask.
+    '''
+    preds = predictions 
+    
+    # separate hand, obj instances
+    hand_preds = preds[preds.pred_classes == 0]
+    obj_preds = preds[preds.pred_classes == 1]
+    if len(obj_preds) == 0: return hand_preds
+    
+    # find incontact obj
+    incontact_obj = []
+    incontact_obj_ind = []
+    modified_hand_preds = []
+    for i in range(len(hand_preds)):
+        box = hand_preds[i].pred_boxes.tensor.cpu().detach().numpy()[0]
+        side = hand_preds[i].pred_handsides.cpu().detach().numpy()[0]
+        conta = hand_preds[i].pred_contacts.cpu().detach().numpy()[0]
+        offset = hand_preds[i].pred_offsets.cpu().detach().numpy()[0]
+    
+        # if incontact
+        if int(np.argmax(conta)):
+            obj, o_ind = get_incontact_obj(hand_preds[i], offset, obj_preds)
+            if isinstance(obj, Instances):
+                # same obj box only add once
+                if o_ind not in incontact_obj_ind:
+                    incontact_obj.append(obj)
+                    incontact_obj_ind.append(o_ind)
+
+                    # new mask, combine hand mask and obj mask
+                    combined_masks = torch.logical_or(hand_preds[i].pred_masks, obj.pred_masks)
+                    # new box, detectron2.structures.boxes.Boxes, (x1, y1, x2, y2)
+                    h_box = hand_preds[i].pred_boxes.tensor
+                    o_box = obj.pred_boxes.tensor
+                    combined_boxes = torch.zeros_like(h_box)
+                    combined_boxes[0,0] = min(h_box[0,0], o_box[0,0])
+                    combined_boxes[0,1] = min(h_box[0,1], o_box[0,1])    
+                    combined_boxes[0,2] = max(h_box[0,2], o_box[0,2])
+                    combined_boxes[0,3] = max(h_box[0,3], o_box[0,3])
+                    
+                    # update
+                    hand_preds[i].pred_masks[0]        = combined_masks
+                    hand_preds[i].pred_boxes.tensor[0] = combined_boxes
+                    
+        # add hand pred to list     
+        modified_hand_preds.append(hand_preds[i])
+    
+    if len(modified_hand_preds) > 0:
+        combined_ho = Instances.cat(modified_hand_preds)
+    else: 
+        combined_ho = []
+  
+    
+    return combined_ho
+
 
 
 def get_offset(h_bbox_xyxy, o_bbox_xyxy):

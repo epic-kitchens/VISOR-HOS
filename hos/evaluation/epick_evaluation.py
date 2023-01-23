@@ -11,16 +11,17 @@ from detectron2.data import MetadataCatalog
 from detectron2.evaluation import COCOEvaluator
 from detectron2.evaluation.coco_evaluation import instances_to_coco_json
 
-from hos.evaluation.hos_postprocessing import hos_postprocessing
+from hos.evaluation.hos_postprocessing import hos_postprocessing, combineHO_postprocessing
 
 class EPICKEvaluator(COCOEvaluator):
     
-    def __init__(self, dataset_name, output_dir=None, eval_task=None):
+    def __init__(self, dataset_name, output_dir=None, eval_task=None, tasks=None):
         super().__init__(dataset_name, output_dir=output_dir)
         self.eval_task = eval_task
-        assert self.eval_task in ['obj_box', 'handside', 'contact'], f"Error: target not in ['obj_box', 'handside', 'contact']"
+        assert self.eval_task in ['hand_obj', 'handside', 'contact', 'combineHO'], f"Error: target not in ['hand_obj', 'handside', 'contact', 'combineHO']"
         print(f'**Evaluation target: {self.eval_task}')
-       
+        if tasks is not None:
+            self._tasks = tasks
         self._metadata = MetadataCatalog.get(dataset_name)
         print(f'dataset name = {dataset_name}')
         print(f'meta data = {self._metadata}')
@@ -46,20 +47,20 @@ class EPICKEvaluator(COCOEvaluator):
 
             if "instances" in output:
                 tmp = output
-                
+                instances = output['instances'].to(self._cpu_device)
                 if self.eval_task == 'obj_box':
                     # post-processing: link hand and obj
-                    output["instances"] = hos_postprocessing(output['instances'].to(self._cpu_device))
-                else:
+                    output["instances"] = hos_postprocessing(instances)
+                elif self.eval_task in ['handside', 'contact']:
                     # only keep hand preds
-                    instances = output['instances'].to(self._cpu_device)
-                    # only keep hands
                     output["instances"] = instances[instances.pred_classes==0]
+                elif self.eval_task == 'combineHO':
+                    # combine hand and obj mask
+                    output["instances"] = combineHO_postprocessing(instances)
 
                 prediction["instances"] = instances_to_coco_json_handside_or_contact(output["instances"], input["image_id"], eval_task=self.eval_task)
                 
             if "proposals" in output:
-                # TODO: need to filter this?
                 prediction["proposals"] = output["proposals"].to(self._cpu_device)
             if len(prediction) > 1:
                 self._predictions.append(prediction)
@@ -86,12 +87,12 @@ def instances_to_coco_json_handside_or_contact(instances, img_id, eval_task=None
     if num_instance == 0:
         return []
     
-    assert eval_task in ['obj_box', 'handside', 'contact'], "Error: evaluation target should be either 'obj_box', 'handside' or 'contact'"
+    assert eval_task in ['hand_obj', 'handside', 'contact', 'combineHO'], "Error: evaluation target should be either 'hand_obj', 'handside', 'contact', 'combineHO'"
 
     boxes = instances.pred_boxes.tensor.numpy()
     boxes = BoxMode.convert(boxes, BoxMode.XYXY_ABS, BoxMode.XYWH_ABS)
     boxes = boxes.tolist()
-    if eval_task == 'obj_box':
+    if eval_task in ['hand_obj', 'combineHO']:
         scores = instances.scores.tolist()
         classes = instances.pred_classes.tolist()
     else:
