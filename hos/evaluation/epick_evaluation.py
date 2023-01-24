@@ -48,7 +48,7 @@ class EPICKEvaluator(COCOEvaluator):
             if "instances" in output:
                 tmp = output
                 instances = output['instances'].to(self._cpu_device)
-                if self.eval_task == 'obj_box':
+                if self.eval_task == 'hand_obj':
                     # post-processing: link hand and obj
                     output["instances"] = hos_postprocessing(instances)
                 elif self.eval_task in ['handside', 'contact']:
