@@ -537,68 +537,15 @@ if __name__ == "__main__":
     logger.info("Done loading {} samples.".format(len(dicts)))
     
     
-    test_glove_ls = [
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002426.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002262.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002584.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002788.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002551.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002821.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002005.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000001717.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002159.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000002036.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000859.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000984.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000001271.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000001196.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000201.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000609.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000165.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000305.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000442.jpg",
-        "/home/dandans/workspace/HOS/epick_visor_coco_hos_hg/test/P07_109_frame_0000000646.jpg"
-    ]
-    
-    bad_ls = [
-        "./datasets/epick_visor_coco_hos/train/P02_03_frame_0000003199.jpg",  
-        "./datasets/epick_visor_coco_hos/train/P04_109_frame_0000017163.jpg",
-        "./datasets/epick_visor_coco_hos/train/P04_109_frame_0000032822.jpg",
-        "./datasets/epick_visor_coco_hos/train/P04_109_frame_0000032822.jpg",
-        "./datasets/epick_visor_coco_hos/train/P04_109_frame_0000032872.jpg",
-        "./datasets/epick_visor_coco_hos/train/P04_109_frame_0000032872.jpg",
-        "./datasets/epick_visor_coco_hos/train/P12_101_frame_0000003059.jpg",
-        "./datasets/epick_visor_coco_hos/train/P24_05_frame_0000083798.jpg",
-        "./datasets/epick_visor_coco_hos/train/P30_107_frame_0000037454.jpg",
-        "./datasets/epick_visor_coco_hos/train/P32_01_frame_0000013628.jpg",
-        "./datasets/epick_visor_coco_hos/val/P06_05_frame_0000022225.jpg",
-        "./datasets/epick_visor_coco_hos/val/P06_05_frame_0000041849.jpg",
-        "./datasets/epick_visor_coco_hos/val/P06_05_frame_0000041849.jpg",
-        "./datasets/epick_visor_coco_hos/val/P22_107_frame_0000007742.jpg",
-        "./datasets/epick_visor_coco_hos/val/P22_107_frame_0000007963.jpg",
-        "./datasets/epick_visor_coco_hos/val/P22_107_frame_0000008318.jpg"
-    ]
-    
-    
-    f = open('/home/dandans/workspace/HOS/data_prep/glove.json', 'r')
-    glove_ls = json.load(f)
-    all_glove_ls = []
-    for split, g_ls in glove_ls.items():
-        for item in g_ls:
-            all_glove_ls.append(os.path.join('/home/dandans/workspace/hos_release/datasets/epick_visor_coco_hos', split, item.split('/')[-1]))
-    
-    
-    
-    random2_ls = os.listdir('/home/dandans/workspace/hos_release/inputs/camera_ready_random2')
-    random3_ls = os.listdir('/home/dandans/workspace/hos_release/inputs/camera_ready_random3')
-    
-    
     # save folder 
-    dirname = f"/home/dandans/workspace/hos_release/outputs/camera_ready_random3/{sys.argv[3]}"
+    dirname = f"./{sys.argv[3]}"
     os.makedirs(dirname, exist_ok=True)
+    
+    # shuffle
     random.shuffle(dicts)
+    
+    # vis and save
     for idx, d in enumerate(dicts):
-        if d['file_name'].split('/')[-1] not in random3_ls: continue
         img = np.array(Image.open(d["file_name"]))
         print(idx, d["file_name"])
         visualizer = Visualizer(img, metadata=meta)
@@ -606,7 +553,7 @@ if __name__ == "__main__":
         fpath = os.path.join(dirname, os.path.basename(d["file_name"]))
         vis.save(fpath)
         
-        
+    # generate a html file for vis
     import glob
     html_path = f'{dirname}.html'
     with open(html_path, 'w') as f_viz:
@@ -614,10 +561,9 @@ if __name__ == "__main__":
         img_list  = glob.glob(f'{dirname}/*.jpg')
         img_list.sort()
         # random.shuffle(img_list)
-
         f_viz.write("<table border='2'>")
         f_viz.write('<tr>')
-        f_viz.write('<th>No.</th>')
+        f_viz.write('<th> No. </th>')
         f_viz.write('<th> mask </th>')
         f_viz.write('</tr>')
         for i in range(0, len(img_list), 5):
@@ -625,12 +571,7 @@ if __name__ == "__main__":
             f_viz.write(f'<td>{i}</td>')
             for j in range(5):
                 if i+j >= len(img_list): continue
-                # img_path = os.path.join('./', img_list[i+j])
-                img_path = img_list[i+j].replace('/home/dandans/workspace/hos_release/data_preparation/debug_vis', '.')
-                f_viz.write(f"<td><image src={img_path} lazy width=400></td>") # raw
-                # f_viz.write(f"<td>{img_path.split('/')[-1]}</td>") # raw
+                img_path = img_list[i+j]
+                f_viz.write(f"<td><image src={img_path} lazy width=400></td>")
             f_viz.write('</tr>')
         f_viz.write('</table>') 
-
-# python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/train.json ./datasets/epick_visor_coco_hos/train epick_visor_2022_train_bad
-# python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/val.json ./datasets/epick_visor_coco_hos/val epick_visor_2022_val_hos
