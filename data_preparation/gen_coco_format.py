@@ -51,22 +51,20 @@ if __name__ == '__main__':
     parser.add_argument('--copy_img', action='store_true', help='Whether to copy image.')
     parser.add_argument('--unzip_img', action='store_true', help='Whether to unzip image.')
     parser.add_argument('--split', nargs='+', required=True, help='Which split to generate COCO annotations.')
-    parser.add_argument('--mode', type=str, required=True, help='[hos, active, all, handside, contact]')
+    parser.add_argument('--mode', type=str, required=True, help='[hos, active, all, handonly]')
     parser.add_argument('--combine_on_hand_glove_w_hand', default=True, help='Whether to combine glove with hands.')
     args = parser.parse_args()
     
 
-    vis_folder = f'epick_visor_coco_{args.mode}'
     save_folder = f'epick_visor_coco_{args.mode}'
     #
     visor_annot_dir = f'{args.epick_visor_store}/annotations'
     visor_img_dir   = f'{args.epick_visor_store}/rgb_frames'
     #
-    vis_dir = f'./vis/{vis_folder}'
     epick_visor_coco_dir = f'../datasets/{save_folder}'
-
-    os.makedirs(vis_dir, exist_ok=True)
     os.makedirs(epick_visor_coco_dir, exist_ok=True)
+    
+    
     for dir in ['train', 'val', 'test', 'annotations']: 
         if dir in ['train', 'val', 'test']:
             if args.copy_img:

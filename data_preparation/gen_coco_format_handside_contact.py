@@ -46,36 +46,35 @@ glove_ls = ['oven glove', 'gloves', 'rubber glove', 'left glove', 'right glove',
 
 if __name__ == '__main__':
     
+    # e.g. gpython gen_coco_format_handside_contact.py --epick_visor_store=/path/to/epick_visor/GroundTruth-SparseAnnotations --mode=combined --split train val
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--epick_visor_store', type=str, required=True, default='/path/to/epick_visor/GroundTruth-SparseAnnotations', help='Folder saving EPIC-KITCHENS VISOR data.')
     parser.add_argument('--num', type=int, default=None, help='Number of jsons to process.')
     parser.add_argument('--copy_img', action='store_true', help='Whether to copy image.')
     parser.add_argument('--unzip_img', action='store_true', help='Whether to unzip image.')
     parser.add_argument('--split', nargs='+', required=True, help='Which split to generate COCO annotations.')
-    parser.add_argument('--mode', type=str, required=True, help='[hos, active, all, handside, contact]')
+    parser.add_argument('--mode', type=str, required=True, help='[handside, contact]')
     parser.add_argument('--combine_on_hand_glove_w_hand', default=True, help='Whether to combine glove with hands.')
-    parser.add_argument('--correct', action='store_true', help='Whether to correct the annotation.')
+    parser.add_argument('--correct', default=True, help='Whether to correct the annotation.')
     args = parser.parse_args()
     
 
-    vis_folder = f'epick_visor_coco_{args.mode}'
     save_folder = f'epick_visor_coco_{args.mode}'
-    vis = args.vis
-    
+    #
     visor_annot_dir = f'{args.epick_visor_store}/annotations'
     visor_img_dir   = f'{args.epick_visor_store}/rgb_frames'
     #
-    vis_dir = f'./vis/{vis_folder}'
     epick_visor_coco_dir = f'../datasets/{save_folder}'
-
-    os.makedirs(vis_dir, exist_ok=True)
     os.makedirs(epick_visor_coco_dir, exist_ok=True)
+    
     for dir in ['train', 'val', 'test', 'annotations']: 
         if dir in ['train', 'val', 'test']:
             if args.copy_img:
                 os.makedirs(f'{epick_visor_coco_dir}/{dir}', exist_ok=True)
         else:
             os.makedirs(f'{epick_visor_coco_dir}/{dir}', exist_ok=True)
+            
     # unzip
     if args.unzip_img:
         for split in ['train', 'val', 'test']:
@@ -92,8 +91,6 @@ if __name__ == '__main__':
                     
             print(f'Finish unzipping all jsons in {split}')
              
-    if args.mode == 'all':
-        key_dict, coco_categories = get_coco_category()
     
     for split in args.split:
         img_ls, annot_ls = [], []
@@ -109,8 +106,6 @@ if __name__ == '__main__':
         if args.num is not None:
             json_ls = json_ls[args.num:]
             
-        # fwrite
-        fw = open('category.txt', 'a+')
         
         # correction
         if args.correct:
@@ -369,7 +364,7 @@ if __name__ == '__main__':
                 {"id": 2, "name": "incontact"},
             ]
         else:
-            print(f'Mode not found.')
+            print(f'Mode not found, {args.mode}')
             pdb.set_trace()
             
         # assembly

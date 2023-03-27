@@ -165,6 +165,16 @@ def get_masks(annot):
     # pdb.set_trace()
     return masks_clean, masks_coco
 
+
+def combine_hand_object(h_masks, o_masks, h_masks_coco, o_masks_coco):
+    if h_masks is not None and o_masks is not None:
+        h_masks.extend(o_masks)
+        h_masks_coco.extend(o_masks_coco)
+        return h_masks, h_masks_coco
+    else:
+        pdb.set_trace()
+        return None
+
     
 def get_incontact_object(in_contact_object=None, h_masks=None, height=None, width=None, image_path=None):
     '''
