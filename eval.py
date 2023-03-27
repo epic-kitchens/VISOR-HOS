@@ -45,6 +45,11 @@ version = 'datasets/epick_visor_coco_active'
 register_epick_instances("epick_visor_2022_val_active", {}, f"{version}/annotations/val.json", f"{version}/val")
 MetadataCatalog.get("epick_visor_2022_val_active").thing_classes = ["hand", "object"]
 
+version = 'datasets/epick_visor_coco_combineHO'
+register_epick_instances("epick_visor_2022_val_combineHO", {}, f"{version}/annotations/val.json", f"{version}/val")
+MetadataCatalog.get("epick_visor_2022_val_combineHO").thing_classes = ["combineHandObj"]
+
+
 def build_sem_seg_train_aug(cfg):
     augs = [
         T.ResizeShortestEdge(
@@ -77,12 +82,14 @@ class Trainer(DefaultTrainer):
         
         if evaluator_type == "coco":
             evaluator_list = [
-                # choose 1 task you want to evaluate below:
+                # choose the task you want to evaluate below, and indicate the corresponding dataset used in the config file
                 
-                EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='hand_obj'),
+                EPICKEvaluator('epick_visor_2022_val_hos', output_dir=output_folder, eval_task='obj_box'),
                 # EPICKEvaluator('epick_visor_2022_val_handside', output_dir=output_folder, eval_task='handside'),
                 # EPICKEvaluator('epick_visor_2022_val_contact', output_dir=output_folder, eval_task='contact'),
+                # EPICKEvaluator('epick_visor_2022_val_combineHO', output_dir=output_folder, eval_task='combineHO'),
                 # COCOEvaluator('epick_visor_2022_val_active', output_dir=output_folder), 
+        
                 ]
             return DatasetEvaluators(evaluator_list)
 
