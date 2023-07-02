@@ -95,8 +95,8 @@ python -m hos.data.datasets.epick ./datasets/epick_visor_coco_hos/annotations/tr
 Download our pre-trained weights into `checkpoints\` folder to run evaluation or demo code:
 ```
 mkdir checkpoints && cd checkpoints
-wget -O model_final_hos.pth https://www.dropbox.com/s/xi3249dbamv9wzs/model_final_hos.pth?dl=0
-wget -O model_final_active.pth https://www.dropbox.com/s/jner6mn0hogmbav/model_final_active.pth?dl=0
+wget -O model_final_hos.pth https://www.dropbox.com/s/bfu94fpft2wi5sn/model_final_hos.pth?dl=0
+wget -O model_final_active.pth https://www.dropbox.com/s/j2tsvjgneyaggy4/model_final_active.pth?dl=0
 cd ..
 ```
 
